@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: _title,
       home: MyStatelessWidget(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -30,6 +31,7 @@ class MyStatelessWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: const Image(image: AssetImage('assets/unnamed.png')),
         title: const Text('餐點'),
         actions: <Widget>[
           IconButton(
@@ -54,7 +56,7 @@ class MyStatelessWidget extends StatelessWidget {
           ),
           Card(
             child: ListTile(
-              leading: const Image(image: NetworkImage('https://lh3.googleusercontent.com/proxy/UzYl5iR0dl3wYAqcCqGXZ4sKqxsfz9TPvHCzKuBevrEDIUu92zyHV8TeT-hRZloBZSBWnVo17LIA2bqc-tmbsFwkFPAjn_aoKIrGc8N9LSYbzuyZhznD9VKBiZk4xavqBqHFbi9I')),
+              leading: const Image(image: NetworkImage('https://doqvf81n9htmm.cloudfront.net/data/maggieyu_81/180320/0320014.jpg')),
               title: Text('派森家常小館'),
               subtitle: Text('台中市西屯區臺灣大道四段108巷24號'),
               trailing: Icon(Icons.navigate_next),
