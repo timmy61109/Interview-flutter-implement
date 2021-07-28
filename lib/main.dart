@@ -5,9 +5,10 @@
 
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:flutter/rendering.dart';
 
 void main() => runApp(MaterialApp(
-    home: new ListViewHomePage(),
+    home: new GridViewHomePage(),
 ));
 
 class HomePage extends StatelessWidget{
@@ -143,6 +144,101 @@ class ListViewBuilderHomePage extends StatelessWidget{
             ),
           );
         }
+      ),
+    );
+  }
+}
+
+class ImageNetworkHomePage extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    debugPaintSizeEnabled = true;
+    final String bannerImg = 'https://i.imgur.com/6Ybjgq2.jpg';
+    return Scaffold(
+      appBar: new AppBar(
+        title: Text('MyApp Demo'),
+      ) ,
+      body: Image.network(
+        bannerImg,
+        height: 200.0,
+        alignment: Alignment.bottomCenter,
+        fit: BoxFit.cover,
+      ),
+    );
+  }
+}
+
+class ImageAssetHomePage extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    debugPaintSizeEnabled = true;
+    final String bannerImg = 'assets/a198cb9d-9a8b-43c0-92af-e0b5ad4ac517.jpg';
+    return Scaffold(
+      appBar: new AppBar(
+        title: Text('MyApp Demo'),
+      ) ,
+      body: Image.asset(
+        bannerImg,
+        height: 200.0,
+        alignment: Alignment.bottomCenter,
+        fit: BoxFit.fitWidth,
+      ),
+    );
+  }
+}
+
+class GridViewHomePage extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    debugPaintSizeEnabled = true;
+    return Scaffold(
+      appBar: new AppBar(
+        title: Text('MyApp Demo'),
+      ) ,
+      body: GridView.count(
+        crossAxisCount: 2,
+        childAspectRatio: 2 / 3,
+        children: List.generate(
+          100,
+          (idx) {
+            return Card(
+              child: Container(
+                child: Text('Index: $idx'),
+                width: 500,
+                height: 500,
+                color: Colors.green,
+              ),
+            );
+          }
+        ),
+      ),
+    );
+  }
+}
+
+class GridViewBuilderHomePage extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    debugPaintSizeEnabled = true;
+    return Scaffold(
+      appBar: new AppBar(
+        title: Text('MyApp Demo'),
+      ) ,
+      body: GridView.builder(
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 100,
+          childAspectRatio: 2/3,
+        ),
+          itemBuilder: (context, idx) {
+            return Card(
+              child: Container(
+                child: Text('Index: $idx'),
+                width: 500,
+                height: 500,
+                color: Colors.green,
+              ),
+            );
+          },
       ),
     );
   }
