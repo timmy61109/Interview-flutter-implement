@@ -13,16 +13,44 @@ void main() => runApp(MaterialApp(
 class HomePage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
+    TextEditingController controller = new TextEditingController();
     // debugPaintSizeEnabled = true;
     return Scaffold(
       appBar: new AppBar(
         title: Text('MyApp Demo'),
       ) ,
-      body: SizedBox(
-        width:100,
-        height: 50,
-        child: Card(
-          child: Text('Test Demo'),
+      body: TextField(
+        controller: controller,
+        onChanged: (text){
+          print('onChanged');
+          print(text);
+        },
+        onEditingComplete: (){
+          print('onEditingComplate');
+          print(controller.text);
+        },
+        // onSubmitted: (text){
+          // print('onSubmitted');
+          // print(text);
+        // },
+        decoration: new InputDecoration(
+          icon: Icon(Icons.calendar_today),
+          labelText: '日期',
+          suffix: IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () {
+              controller.text = '';
+              FocusScope.of(context).requestFocus(new FocusNode());
+            }
+          ),
+          suffixIcon: Icon(Icons.close),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.green
+            )
+          ),
+          helperText: '輸入日期',
+          hintText: '輸入日期',
         ),
       ),
     );
