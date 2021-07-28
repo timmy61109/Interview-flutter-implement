@@ -13,26 +13,20 @@ void main() => runApp(MaterialApp(
 class HomePage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
+    // debugPaintSizeEnabled = true;
     return Scaffold(
       appBar: new AppBar(
         title: Text('MyApp Demo'),
       ) ,
-      body: Row(children: <Widget>[
-        Text(
-          'Demo',
-          style: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.w700,
-            color: Colors.green,
-            fontStyle: FontStyle.italic
-          ),
-        ),
-        Container(
+      body: Container(
+        child: Text('My Container Demo'),
+        padding: EdgeInsets.all(20.0),
+        margin: EdgeInsets.all(20.0),
+        decoration: BoxDecoration(
           color: Colors.greenAccent,
-          width: 10.0,
-          height: 10.0,
-        )
-      ],),
+          borderRadius: BorderRadius.circular(10)
+        ),
+      )
     );
   }
 }
