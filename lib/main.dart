@@ -8,7 +8,7 @@ import 'dart:math';
 import 'package:flutter/rendering.dart';
 
 void main() => runApp(MaterialApp(
-    home: new GridViewHomePage(),
+    home: new ButtomNavigationBarHomePage(),
 ));
 
 class HomePage extends StatelessWidget{
@@ -240,6 +240,71 @@ class GridViewBuilderHomePage extends StatelessWidget{
             );
           },
       ),
+    );
+  }
+}
+
+class ButtomNavigationBarHomePage extends StatefulWidget{
+  @override
+  _ButtomNavigationBarHomePageState createState() => _ButtomNavigationBarHomePageState();
+}
+
+class _ButtomNavigationBarHomePageState extends State<ButtomNavigationBarHomePage>{
+  int index = 0;
+  List<Widget> pages = [
+    Container(color: Colors.red),
+    Container(color: Colors.blue),
+    Container(color: Colors.green),
+    Container(color: Colors.orange),
+  ];
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: new AppBar(
+        title: Text('MyApp Demo'),
+      ) ,
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: index,
+        onTap: (int idx) {
+          setState(
+            () {
+              index = idx;
+            }
+          );
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.add,
+              color: Colors.black87,
+            ),
+            label: 'Add'
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.account_circle,
+              color: Colors.black87,
+            ),
+            label: 'Account'
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.close,
+              color: Colors.black87,
+            ),
+            label: 'Close'
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.build,
+              color: Colors.black87,
+            ),
+            label: 'Build'
+          ),
+        ]
+      ),
+      body: pages[index],
     );
   }
 }
