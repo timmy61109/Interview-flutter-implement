@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 void main() => runApp(MaterialApp(
-    home: new HomePage(),
+    home: new ListViewHomePage(),
 ));
 
 class HomePage extends StatelessWidget{
@@ -96,5 +96,54 @@ class HomePage2Sate extends State<HomePage2>{
       Random().nextInt(255),
       Random().nextInt(255),
       Random().nextInt(255));
+  }
+}
+
+class ListViewHomePage extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: new AppBar(
+        title: Text('MyApp Demo'),
+      ) ,
+      body: ListView(
+        children: List.generate(
+          10,
+          (idx) {
+            print('$idx');
+            return Card(
+              child: Container(
+                height: 150,
+                color: Colors.greenAccent,
+                child: Text('$idx'),
+              ),
+            );
+          }
+        ),
+      ),
+    );
+  }
+}
+
+class ListViewBuilderHomePage extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: new AppBar(
+        title: Text('MyApp Demo'),
+      ) ,
+      body: ListView.builder(
+        itemBuilder: (context, idx) {
+          print('$idx');
+          return Card(
+            child: Container(
+              height: 150,
+              color: Colors.yellowAccent,
+              child: Text('$idx'),
+            ),
+          );
+        }
+      ),
+    );
   }
 }
