@@ -18,11 +18,11 @@ class HomePage extends StatelessWidget{
       appBar: new AppBar(
         title: Text('MyApp Demo'),
       ) ,
-      body: Card(
-        child: Container(
+      body: SizedBox(
+        width:100,
+        height: 50,
+        child: Card(
           child: Text('Test Demo'),
-          width: 100,
-          height: 100,
         ),
       ),
     );
