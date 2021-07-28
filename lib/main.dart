@@ -18,14 +18,13 @@ class HomePage extends StatelessWidget{
       appBar: new AppBar(
         title: Text('MyApp Demo'),
       ) ,
-      body: Container(
-        width: 40.0,
-        height: 40.0,
-        decoration: BoxDecoration(
-          color: Colors.greenAccent,
-          shape: BoxShape.circle
+      body: Card(
+        child: Container(
+          child: Text('Test Demo'),
+          width: 100,
+          height: 100,
         ),
-      )
+      ),
     );
   }
 }
