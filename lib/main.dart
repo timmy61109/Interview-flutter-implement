@@ -19,12 +19,11 @@ class HomePage extends StatelessWidget{
         title: Text('MyApp Demo'),
       ) ,
       body: Container(
-        child: Text('My Container Demo'),
-        padding: EdgeInsets.all(20.0),
-        margin: EdgeInsets.all(20.0),
+        width: 40.0,
+        height: 40.0,
         decoration: BoxDecoration(
           color: Colors.greenAccent,
-          borderRadius: BorderRadius.circular(10)
+          shape: BoxShape.circle
         ),
       )
     );
