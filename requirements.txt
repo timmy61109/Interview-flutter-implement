@@ -1,0 +1,10 @@
+Django
+djangorestframework
+graphene-django
+django-graphql-jwt
+django-graphql-auth
+django-filter
+uritemplate
+Pygments
+django-guardian
+markdown
