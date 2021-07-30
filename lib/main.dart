@@ -6,9 +6,18 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:flutter/rendering.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'SqliteHelper.dart';
 
-void main() => runApp(MaterialApp(
-    home: new ButtomNavigationBarHomePage(),
+
+void main() => runApp(
+  MaterialApp(
+    initialRoute: '/',
+    routes: {
+      '/': (context) {return SqliteHomePage();},
+      '/page2': (context) {return Page2(textData: 'abcd');},
+    },
 ));
 
 class HomePage extends StatelessWidget{
@@ -305,6 +314,223 @@ class _ButtomNavigationBarHomePageState extends State<ButtomNavigationBarHomePag
         ]
       ),
       body: pages[index],
+    );
+  }
+}
+
+class NavigatorHomePageState extends StatefulWidget {
+  @override
+  _NavigatorHomePageState createState() => _NavigatorHomePageState();
+}
+
+class _NavigatorHomePageState extends State<NavigatorHomePageState> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('page1'),
+      ),
+      body: Container(color: Colors.red,),
+      floatingActionButton: FloatingActionButton(onPressed:() {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) {
+              return Page2(textData: 'abcd');
+            })
+          ).then((value) {print(value);});
+        },
+      ),
+    );
+  }
+}
+
+class Page2 extends StatelessWidget {
+  final String textData;
+  Page2({
+    Key? key,
+    required this.textData
+  }): super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('page2'),
+      ),
+      body: SizedBox.expand(
+        child: Container(
+          child: Text(textData),
+          color: Colors.green,
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pop(context, 'qqqqqqqqqq');
+        },
+      ),
+    );
+  }
+}
+
+class HttpHomePage extends StatefulWidget {
+  @override
+  _HttpHomePage createState() => _HttpHomePage();
+}
+
+class _HttpHomePage extends State<HttpHomePage> {
+  final String host = 'https://jsonplaceholder.typicode.com/posts';
+  List datas = [];
+  @override
+  void initState() {
+    super.initState();
+  }
+  // 取得網站內容 方式 1
+  // getData() async {
+  //   var response = await http.get(Uri.parse(host));
+  //   print(response.body);
+  // }
+
+  // 取得網站內容 方式 2
+  // getData() {
+  //   http.get(Uri.parse(host)).then(
+  //     (response) {
+  //       print(response.body);
+  //     }
+  //   );
+  // }
+
+  // 取得Json格式資料
+  getData() {
+    http.get(Uri.parse(host)).then(
+      (response) {
+        setState(
+          () {
+            datas = jsonDecode(response.body);
+          }
+        );
+      }
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    getData();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Http+FutureBuider'),
+      ),
+      body: ListView.builder(
+        itemCount: datas.length,
+        itemBuilder: (context, idx){
+          var data = datas[idx];
+          return ListTile(
+            title: Text(data['title']),
+            subtitle: Text(data['body']),
+          );
+        },
+      )
+    );
+  }
+}
+
+// // 目前這麼方法無法解決
+// class FutureBuilderHomePage extends StatefulWidget {
+//   @override
+//   _FutureBuilderHomePage createState() => _FutureBuilderHomePage();
+// }
+//
+// class _FutureBuilderHomePage extends State<FutureBuilderHomePage> {
+//   final String host = 'https://jsonplaceholder.typicode.com/posts';
+//   @override
+//   void initState() {
+//     super.initState();
+//   }
+//   // 取得網站內容 方式 1
+//   // getData() async {
+//   //   var response = await http.get(Uri.parse(host));
+//   //   print(response.body);
+//   // }
+//
+//   // 取得網站內容 方式 2
+//   getData() {
+//     http.get(Uri.parse(host));
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     getData();
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Http+FutureBuider'),
+//       ),
+//       body: FutureBuilder(
+//         future: getData(),
+//         builder: (context, snap) {
+//
+//           if (!snap.hasData) {
+//             return Container();
+//           }
+//           data = snap;
+//           List datas = jsonDecode(data.body);
+//           return ListView.builder(
+//             itemCount: datas.length,
+//             itemBuilder: (context, idx){
+//               var data = datas[idx];
+//               return ListTile(
+//                 title: Text(data['title']),
+//                 subtitle: Text(data['body']),
+//               );
+//             },
+//           );
+//         }
+//       )
+//     );
+//   }
+// }
+
+class SqliteHomePage extends StatefulWidget {
+  @override
+  _SqliteHomePage createState() => _SqliteHomePage();
+}
+
+class _SqliteHomePage extends State<SqliteHomePage> {
+  final String host = 'https://jsonplaceholder.typicode.com/posts';
+  final sqlHelp = SqliteHelper();
+
+  getAllPost() async {
+    await sqlHelp.open();
+    return await sqlHelp.queryAll();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.http),
+        onPressed: () async {
+          await sqlHelp.open();
+          var response = await http.get(Uri.parse(host));
+          List l = jsonDecode(response.body);
+          l.forEach((e) async => sqlHelp.insert(e)
+        );
+        setState(() {});
+        },
+      ),
+      appBar: AppBar(
+        title: Text('SQLite in Flutter'),
+      ),
+      body: FutureBuilder(
+        future: getAllPost(),
+        builder: (context, snap) {
+          if (snap.hasData) {
+            List l = snap.data;
+            return ListView.builder(
+              itemCount: l.length,
+              itemBuilder: (context, idx) {
+                return ListTile(title: Text(l[idx]['title']),);
+              },
+            );
+          }
+          return Container();
+        }
+      )
     );
   }
 }
