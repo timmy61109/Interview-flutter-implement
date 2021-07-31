@@ -9,13 +9,23 @@ import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'SqliteHelper.dart';
+import 'api_test.dart';
+import "package:graphql_flutter/graphql_flutter.dart";
+import 'package:graphql/client.dart';
 
 
 void main() => runApp(
   MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) {return SqliteHomePage();},
+      '/': (context) {
+        return GraphQLProviderLoginPage(
+          client: graphQLConfiguration.client,
+          child: CacheProvider(
+            child: LoginPage()
+          ),
+        );
+      },
       '/page2': (context) {return Page2(textData: 'abcd');},
     },
 ));
@@ -431,60 +441,60 @@ class _HttpHomePage extends State<HttpHomePage> {
   }
 }
 
-// // 目前這麼方法無法解決
-// class FutureBuilderHomePage extends StatefulWidget {
-//   @override
-//   _FutureBuilderHomePage createState() => _FutureBuilderHomePage();
-// }
-//
-// class _FutureBuilderHomePage extends State<FutureBuilderHomePage> {
-//   final String host = 'https://jsonplaceholder.typicode.com/posts';
-//   @override
-//   void initState() {
-//     super.initState();
-//   }
-//   // 取得網站內容 方式 1
-//   // getData() async {
-//   //   var response = await http.get(Uri.parse(host));
-//   //   print(response.body);
-//   // }
-//
-//   // 取得網站內容 方式 2
-//   getData() {
-//     http.get(Uri.parse(host));
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     getData();
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Http+FutureBuider'),
-//       ),
-//       body: FutureBuilder(
-//         future: getData(),
-//         builder: (context, snap) {
-//
-//           if (!snap.hasData) {
-//             return Container();
-//           }
-//           data = snap;
-//           List datas = jsonDecode(data.body);
-//           return ListView.builder(
-//             itemCount: datas.length,
-//             itemBuilder: (context, idx){
-//               var data = datas[idx];
-//               return ListTile(
-//                 title: Text(data['title']),
-//                 subtitle: Text(data['body']),
-//               );
-//             },
-//           );
-//         }
-//       )
-//     );
-//   }
-// }
+// 目前這麼方法無法解決
+class FutureBuilderHomePage extends StatefulWidget {
+  @override
+  _FutureBuilderHomePage createState() => _FutureBuilderHomePage();
+}
+
+class _FutureBuilderHomePage extends State<FutureBuilderHomePage> {
+  final String host = 'https://jsonplaceholder.typicode.com/posts';
+  @override
+  void initState() {
+    super.initState();
+  }
+  // 取得網站內容 方式 1
+  // getData() async {
+  //   var response = await http.get(Uri.parse(host));
+  //   print(response.body);
+  // }
+
+  // 取得網站內容 方式 2
+  getData() {
+    http.get(Uri.parse(host));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    getData();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Http+FutureBuider'),
+      ),
+      body: FutureBuilder(
+        future: getData(),
+        builder: (context, snap) {
+
+          if (!snap.hasData) {
+            return Container();
+          }
+          data = snap;
+          List datas = jsonDecode(data.body);
+          return ListView.builder(
+            itemCount: datas.length,
+            itemBuilder: (context, idx){
+              var data = datas[idx];
+              return ListTile(
+                title: Text(data['title']),
+                subtitle: Text(data['body']),
+              );
+            },
+          );
+        }
+      )
+    );
+  }
+}
 
 class SqliteHomePage extends StatefulWidget {
   @override
@@ -519,6 +529,7 @@ class _SqliteHomePage extends State<SqliteHomePage> {
       body: FutureBuilder(
         future: getAllPost(),
         builder: (context, snap) {
+          print(snap);
           if (snap.hasData) {
             List l = snap.data;
             return ListView.builder(
