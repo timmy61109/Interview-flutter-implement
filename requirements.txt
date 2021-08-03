@@ -1,10 +1,11 @@
 Django
 djangorestframework
 graphene-django
-django-graphql-jwt
+django-graphql-jwt==0.3.0
 django-graphql-auth
 django-filter
+django-guardian
+django-cors-headers
 uritemplate
 Pygments
-django-guardian
-markdown
+Markdown
