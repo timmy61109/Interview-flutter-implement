@@ -10,8 +10,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'SqliteHelper.dart';
 import 'api_test.dart';
-import "package:graphql_flutter/graphql_flutter.dart";
-import 'package:graphql/client.dart';
 
 
 void main() => runApp(
@@ -19,11 +17,12 @@ void main() => runApp(
     initialRoute: '/',
     routes: {
       '/': (context) {
-        return GraphQLProviderLoginPage(
-          client: graphQLConfiguration.client,
-          child: CacheProvider(
-            child: LoginPage()
+        return new MaterialApp(
+          title: 'Login Demo Asap',
+          theme: new ThemeData(
+            primarySwatch: Colors.red
           ),
+          home: new LoginPage(),
         );
       },
       '/page2': (context) {return Page2(textData: 'abcd');},
@@ -453,7 +452,7 @@ class _FutureBuilderHomePage extends State<FutureBuilderHomePage> {
   void initState() {
     super.initState();
   }
-  // 取得網站內容 方式 1
+  //  取得網站內容 方式 1
   // getData() async {
   //   var response = await http.get(Uri.parse(host));
   //   print(response.body);
@@ -529,9 +528,8 @@ class _SqliteHomePage extends State<SqliteHomePage> {
       body: FutureBuilder(
         future: getAllPost(),
         builder: (context, snap) {
-          print(snap);
           if (snap.hasData) {
-            List l = snap.data;
+            List l = [snap.data];
             return ListView.builder(
               itemCount: l.length,
               itemBuilder: (context, idx) {
