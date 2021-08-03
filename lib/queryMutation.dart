@@ -1,5 +1,5 @@
 class QueryMutation {
-  String register(String email, String user, String password){
+  String register(String email, String user, String password) {
     return """
       mutation {
         register(
