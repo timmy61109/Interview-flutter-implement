@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 import "package:graphql_flutter/graphql_flutter.dart";
-import 'package:graphql/client.dart';
 import 'graphQLConf.dart';
 import 'queryMutation.dart';
 
 void main() {
-    WidgetsFlutterBinding.ensureInitialized();
-      runApp(
-        GraphQLProvider(
-        client: client,
-        child: CacheProvider(child: MyApp()),
-      ),);
-      }
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(
+    GraphQLProvider(
+      client: GraphQLConfiguration.client,
+      child: CacheProvider(child: MyApp()),
+  ),);
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'Login Demo Asap',
-      theme: new ThemeData(
+      theme: ThemeData(
         primarySwatch: Colors.red
       ),
-      home: new LoginPage(),
+      home: LoginPage(),
     );
   }
 }
@@ -38,9 +37,8 @@ enum FormType {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
-  final TextEditingController _emailFilter = new TextEditingController();
-  final TextEditingController _passwordFilter = new TextEditingController();
+  final TextEditingController _emailFilter = TextEditingController();
+  final TextEditingController _passwordFilter = TextEditingController();
   String _email = "";
   String _password = "";
   FormType _form = FormType.login; // our default setting is to login, and we should switch to creating an account when the user chooses to
@@ -167,17 +165,21 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _createAccountPressed () async {
+    print('The user wants to create an accoutn with $_email and $_password');
+    final GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
+    final QueryMutation addMutation = QueryMutation();
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     QueryResult result = await _client.mutate(
       MutationOptions(
-        document: addMutation.register('$_email','','$_password'),
+        document: gql(addMutation.register('$_email', '', '$_password'),
+        ),
       ),
     );
-    if (result.data["success"]!=null){
+    if (result.data!["success"]!=null){
       print('The user was created successfully!');
     }else{
       print('There was an error!');
-      print(result.data["register"]["errors"]["email"][0]["message"]);
+      print(result.data!["register"]["errors"]["email"][0]["message"]);
     }
   }
 
