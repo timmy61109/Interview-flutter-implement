@@ -60,3 +60,8 @@ def menu(request):
     }
     foods = [food1, food2]  # pylint: disable=W0641
     return render(request, 'menu.html', locals())
+
+
+def index(request):  # pylint: disable=W0613
+    """首頁."""
+    return render(request, 'index.html')
