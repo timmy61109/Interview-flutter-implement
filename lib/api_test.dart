@@ -3,7 +3,7 @@ import "package:graphql_flutter/graphql_flutter.dart";
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  HttpLink httpLink = HttpLink('http://127.0.0.1:8000/graphql',);
+  HttpLink httpLink = HttpLink('http://localhost:8000/graphql',);
   ValueNotifier<GraphQLClient> _client = ValueNotifier(
     GraphQLClient(
       link: httpLink,
@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailFilter = TextEditingController();
   final TextEditingController _usernameFilter = TextEditingController();
   final TextEditingController _passwordFilter = TextEditingController();
-  static HttpLink httpLink = HttpLink('http://127.0.0.1:8000/graphql',);
+  static HttpLink httpLink = HttpLink('http://localhost:8000/graphql',);
   GraphQLClient _client = GraphQLClient(
     link: httpLink,
     cache: GraphQLCache(
@@ -218,14 +218,18 @@ class _LoginPageState extends State<LoginPage> {
       document: gql(register),
     );
     final QueryResult result = await _client.mutate(options);
-    print(result.data);
-    if (result.data?["success"] == true){
+    // 之後要注回傳資料Map的結構，不然還是會同樣出錯
+    if (result.data!["register"]["success"] == true) {
       print('The user was created successfully!');
-      print('The user wants to create an accoutn with $_email and $_password');
+      print('The user wants to create an accoutn with \nUsername: $_username\nEmail: $_email\nPassword: $_password');
+      print('狀態： ${result.data!["register"]["register"]}');
+      print('權杖： ${result.data!["register"]["token"]}');
+      print('更新權杖： ${result.data!["register"]["refreshToken"]}\n');
 
     } else {
       print('There was an error!');
-      print(result.data?["register"]["errors"]["email"][0]["message"]);
+      print('狀態： ${result.data!["register"]["register"]}');
+      print('錯誤訊息： ${result.data!["register"]["errors"]["email"][0]["message"]}\n');
     }
   }
 
