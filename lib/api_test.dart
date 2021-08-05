@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import "package:graphql_flutter/graphql_flutter.dart";
-import 'graphQLConf.dart';
-import 'queryMutation.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  HttpLink httpLink = HttpLink('http://127.0.0.1:8000/graphql',);
+  ValueNotifier<GraphQLClient> _client = ValueNotifier(
+    GraphQLClient(
+      link: httpLink,
+      cache: GraphQLCache(
+        store: InMemoryStore(),
+      ),
+    ),
+  );
+
   runApp(
     GraphQLProvider(
-      client: GraphQLConfiguration.client,
+      client: _client,
       child: CacheProvider(child: MyApp()),
   ),);
 }
@@ -38,13 +46,23 @@ enum FormType {
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailFilter = TextEditingController();
+  final TextEditingController _usernameFilter = TextEditingController();
   final TextEditingController _passwordFilter = TextEditingController();
+  static HttpLink httpLink = HttpLink('http://127.0.0.1:8000/graphql',);
+  GraphQLClient _client = GraphQLClient(
+    link: httpLink,
+    cache: GraphQLCache(
+      store: InMemoryStore(),
+    ),
+  );
   String _email = "";
   String _password = "";
+  String _username = "";
   FormType _form = FormType.login; // our default setting is to login, and we should switch to creating an account when the user chooses to
 
   _LoginPageState() {
     _emailFilter.addListener(_emailListen);
+    _usernameFilter.addListener(_usernameListen);
     _passwordFilter.addListener(_passwordListen);
   }
 
@@ -53,6 +71,14 @@ class _LoginPageState extends State<LoginPage> {
       _email = "";
     } else {
       _email = _emailFilter.text;
+    }
+  }
+
+  void _usernameListen() {
+    if (_usernameFilter.text.isEmpty) {
+      _username = "";
+    } else {
+      _username = _usernameFilter.text;
     }
   }
 
@@ -101,20 +127,28 @@ class _LoginPageState extends State<LoginPage> {
           new Container(
             child: new TextField(
               controller: _emailFilter,
-              decoration: new InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Email'
               ),
             ),
           ),
-          new Container(
-            child: new TextField(
+          Container(
+            child: TextField(
+              controller: _usernameFilter,
+              decoration: InputDecoration(
+                  labelText: 'Username'
+              ),
+            ),
+          ),
+          Container(
+            child: TextField(
               controller: _passwordFilter,
-              decoration: new InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Password'
               ),
               obscureText: true,
             ),
-          )
+          ),
         ],
       ),
     );
@@ -165,21 +199,33 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _createAccountPressed () async {
-    print('The user wants to create an accoutn with $_email and $_password');
-    final GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
-    final QueryMutation addMutation = QueryMutation();
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    QueryResult result = await _client.mutate(
-      MutationOptions(
-        document: gql(addMutation.register('$_email', '', '$_password'),
-        ),
-      ),
+    final String register = """
+    mutation {
+        register(
+          email: "$_email",
+          username: "$_username",
+          password1: "$_password",
+          password2: "$_password",
+        ) {
+          success,
+          errors,
+          token,
+          refreshToken
+        }
+      }
+    """;
+    MutationOptions options = MutationOptions(
+      document: gql(register),
     );
-    if (result.data!["success"]!=null){
+    final QueryResult result = await _client.mutate(options);
+    print(result.data);
+    if (result.data?["success"] == true){
       print('The user was created successfully!');
-    }else{
+      print('The user wants to create an accoutn with $_email and $_password');
+
+    } else {
       print('There was an error!');
-      print(result.data!["register"]["errors"]["email"][0]["message"]);
+      print(result.data?["register"]["errors"]["email"][0]["message"]);
     }
   }
 
