@@ -218,7 +218,7 @@ class _LoginPageState extends State<LoginPage> {
       document: gql(register),
     );
     final QueryResult result = await _client.mutate(options);
-    // 之後要注回傳資料Map的結構，不然還是會同樣出錯
+    // 之後要注回傳字典的結構，不然還是會同樣出錯
     if (result.data!["register"]["success"] == true) {
       print('The user was created successfully!');
       print('The user wants to create an accoutn with \nUsername: $_username\nEmail: $_email\nPassword: $_password');
