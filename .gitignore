@@ -1,6 +1,6 @@
 # Flutter
 .flutter-*
-!/lib/*.dart
+!/lib/*
 
 # Built application files
 *.apk
