@@ -280,7 +280,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text('密碼'),
+        title: Text('忘記密碼'),
         centerTitle: true,
       ),
       body: Container(
